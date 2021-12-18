@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {GUI} from "dat.gui";
 import * as THREE from 'three';
-import * as STATS from 'stats-js';
 import * as AMI from 'ami.js'
 
 @Component({
@@ -19,7 +18,7 @@ export class RendererComponent implements OnInit {
   vrHelper;
   lut;
   ready = false;
-  file = 'https://cdn.rawgit.com/FNNDSC/data/master/nifti/eun_brain/eun_uchar_8.nii.gz';
+  file = 'assets/test.nii.gz';
   loader;
 
   myStack = {
@@ -57,6 +56,7 @@ export class RendererComponent implements OnInit {
   }
 
   buildGUI() {
+    const that = this;
     var gui = new GUI({
       autoPlace: false
     });
@@ -67,9 +67,9 @@ export class RendererComponent implements OnInit {
     var stackFolder = gui.addFolder('Settings');
     var lutUpdate = stackFolder.add(this.myStack, 'lut', this.lut.lutsAvailable());
     lutUpdate.onChange(function (value) {
-      this.lut.lut = value;
-      this.vrHelper.uniforms.uTextureLUT.value.dispose();
-      this.vrHelper.uniforms.uTextureLUT.value = this.lut.texture;
+      that.lut.lut = value;
+      that.vrHelper.uniforms.uTextureLUT.value.dispose();
+      that.vrHelper.uniforms.uTextureLUT.value = that.lut.texture;
     });
     // init LUT
     this.lut.lut = this.myStack.lut;
@@ -78,22 +78,22 @@ export class RendererComponent implements OnInit {
 
     var opacityUpdate = stackFolder.add(this.myStack, 'opacity', this.lut.lutsAvailable('opacity'));
     opacityUpdate.onChange(function (value) {
-      this.lut.lutO = value;
-      this.vrHelper.uniforms.uTextureLUT.value.dispose();
-      this.vrHelper.uniforms.uTextureLUT.value = this.lut.texture;
+      that.lut.lutO = value;
+      that.vrHelper.uniforms.uTextureLUT.value.dispose();
+      that.vrHelper.uniforms.uTextureLUT.value = that.lut.texture;
     });
 
     var stepsUpdate = stackFolder.add(this.myStack, 'steps', 0, 512).step(1);
     stepsUpdate.onChange(function (value) {
-      if (this.vrHelper.uniforms) {
-        this.vrHelper.uniforms.uSteps.value = value;
+      if (that.vrHelper.uniforms) {
+        that.vrHelper.uniforms.uSteps.value = value;
       }
     });
 
     var alphaCorrrectionUpdate = stackFolder.add(this.myStack, 'alphaCorrection', 0, 1).step(0.01);
     alphaCorrrectionUpdate.onChange(function (value) {
-      if (this.vrHelper.uniforms) {
-        this.vrHelper.uniforms.uAlphaCorrection.value = value;
+      if (that.vrHelper.uniforms) {
+        that.vrHelper.uniforms.uAlphaCorrection.value = value;
       }
     });
 
